@@ -1,0 +1,50 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "spacing": 4,
+
+    "modules-left": ["hyprland/workspaces"],
+    "modules-right": ["pulseaudio", "network", "cpu", "memory", "battery", "tray", "clock"],
+
+    "hyprland/workspaces": {
+        "disable-scroll": false,
+        "all-outputs": true,
+        "active-only": false,
+        "format": "{icon}",
+        "format-icons": {
+            "1": "",
+            "2": "",
+            "3": "",
+            "4": "",
+            "5": "",
+            "active": "",
+            "urgent": "",
+            "default": ""
+        }
+    },
+    "clock": {
+        "format": "{:%Y-%m-%d %H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+    "cpu": {
+        "format": "CPU: {usage}%",
+        "tooltip": false
+    },
+    "memory": {
+        "format": "RAM: {}%"
+    },
+    "battery": {
+        "format": "BAT: {capacity}%",
+        "format-charging": "CHG: {capacity}%"
+    },
+    "network": {
+        "format-wifi": "WiFi: {essid}",
+        "format-ethernet": "ETH: {ipaddr}",
+        "format-disconnected": "Disconnected"
+    },
+    "pulseaudio": {
+        "format": "VOL: {volume}%",
+        "format-muted": "MUTED"
+    }
+}
