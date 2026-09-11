@@ -38,7 +38,7 @@ hl.config({
 		border_size = 2,
 		["col.active_border"] = "rgba(ffffffaa)",
 		["col.inactive_border"] = "rgba(222222aa)",
-		layout = "dwindle",
+		layout = "master",
 	},
 
 	decoration = {
