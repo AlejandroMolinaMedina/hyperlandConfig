@@ -17,7 +17,7 @@ hl.bind("ALT + SHIFT + K", hl.dsp.window.move({ direction = "u" }))
 -- Ventanas
 -- ============================================
 
-hl.bind("ALT + RETURN", hl.dsp.window.fullscreen({ action = "toggle" }))
+hl.bind("ALT + RETURN", hl.dsp.window.fullscreen({ mode = "maximized" }))
 hl.bind("ALT + T", hl.dsp.window.float({ action = "toggle" }))
 hl.bind("ALT + W", hl.dsp.window.close())
 
@@ -76,26 +76,79 @@ hl.bind("SUPER + L", hl.dsp.exec_cmd("hyprlock"))
 -- ============================================
 -- Workspaces
 -- ============================================
---hl.bind("ALT + 1", hl.dsp.workspace.change_id({ workspace = 1 }))
---hl.bind("ALT + 2", hl.dsp.workspace.change_id({ workspace = 2 }))
---hl.bind("ALT + 3", hl.dsp.workspace.change_id({ workspace = 3 }))
---hl.bind("ALT + 4", hl.dsp.workspace.change_id({ workspace = 4 }))
---hl.bind("ALT + 5", hl.dsp.workspace.change_id({ workspace = 5 }))
--- ============================================
--- Mover ventanas a workspaces
--- ============================================
 
-hl.bind("ALT + SHIFT + 1", hl.dsp.window.move({ workspace = "1" }))
-
-hl.bind("ALT + SHIFT + 2", hl.dsp.window.move({ workspace = "2" }))
-
-hl.bind("ALT + SHIFT + 3", hl.dsp.window.move({ workspace = "3" }))
-
-hl.bind("ALT + SHIFT + 4", hl.dsp.window.move({ workspace = "4" }))
-
-hl.bind("ALT + SHIFT + 5", hl.dsp.window.move({ workspace = "5" }))
+for i = 1, 9 do
+	hl.bind(
+		"ALT + " .. i,
+		hl.dsp.focus({
+			workspace = i,
+			on_current_monitor = true,
+		})
+	)
+end
 
 -- ============================================
+-- Workspaces
+-- ============================================
+
+for i = 1, 9 do
+	-- Cambiar al workspace
+	hl.bind(
+		"ALT + " .. i,
+		hl.dsp.focus({
+			workspace = i,
+			on_current_monitor = true,
+		})
+	)
+
+	-- Mover ventana al workspace y cambiar a él
+	hl.bind("ALT + SHIFT + " .. i, function()
+		hl.dispatch(hl.dsp.window.move({
+			workspace = i,
+		}))
+
+		hl.dispatch(hl.dsp.focus({
+			workspace = i,
+			on_current_monitor = true,
+		}))
+	end)
+end
+
+-------
+------
+local function go_to_workspace(i)
+	local ws = hl.get_workspace(i)
+
+	if ws == nil then
+		return
+	end
+
+	local monitor = ws.monitor
+
+	if monitor == nil then
+		return
+	end
+
+	-- Cambiar el foco al workspace
+	hl.dispatch(hl.dsp.focus({
+		workspace = i,
+	}))
+
+	-- Mover el mouse al centro del monitor
+	hl.dispatch(hl.dsp.cursor.move({
+		x = monitor.x + monitor.width / 2,
+		y = monitor.y + monitor.height / 2,
+	}))
+end
+
+for i = 1, 9 do
+	hl.bind("ALT + CTRL + " .. i, function()
+		go_to_workspace(i)
+	end)
+end
+---
+
+-- ===================a=========================
 -- Capturas de pantalla
 -- ============================================
 
