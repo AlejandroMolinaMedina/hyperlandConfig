@@ -1,0 +1,3 @@
+# Caché de Python de los scripts de Waybar
+__pycache__/
+*.pyc
