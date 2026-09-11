@@ -2,5 +2,10 @@
     "layer": "top",
     "position": "top",
     "height": 30,
-    "modules-center": ["clock"]
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["clock"],
+    "hyprland/workspaces": {
+        "all-outputs": true,
+        "on-click": "activate"
+    }
 }
