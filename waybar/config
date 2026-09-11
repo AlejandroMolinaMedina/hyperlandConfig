@@ -4,47 +4,110 @@
     "height": 30,
     "spacing": 4,
 
-    "modules-left": ["hyprland/workspaces"],
-    "modules-right": ["pulseaudio", "network", "cpu", "memory", "battery", "tray", "clock"],
+    "modules-left": ["hyprland/workspaces", "hyprland/workspaces#apps"],
+    "modules-center": [],
+    "modules-right": ["tray", "custom/carousel#media", "custom/carousel#system", "clock", "custom/notifications", "battery"],
 
+    "backlight": {
+        "device": "intel_backlight",
+        "format": "{icon} {percent}%",
+        "format-icons": ["●" ,"◕" ,"◗", "◔", "○"],
+        "on-scroll-up": "brightnessctl set 5%+",
+        "on-scroll-down": "brightnessctl set 5%-"
+    },
     "hyprland/workspaces": {
-        "disable-scroll": false,
-        "all-outputs": true,
+        "all-outputs": false,
+        "on-click": "activate",
         "active-only": false,
-        "format": "{icon}",
-        "format-icons": {
-            "1": "",
-            "2": "",
-            "3": "",
-            "4": "",
-            "5": "",
-            "active": "",
-            "urgent": "",
-            "default": ""
+        "format": "{icon}"
+    },
+    "hyprland/workspaces#apps": {
+        "active-only": true,
+        "all-outputs": false,
+        // workspace-taskbar solo se activa si el formato contiene {windows}
+        "format": "{windows}",
+        "workspace-taskbar": {
+            "enable": true,
+            "update-active-window": true,
+            "format": "{icon}",
+            "icon-size": 18,
+            "icon-theme": ["Papirus-Dark", "Adwaita"],
+            "on-click-window": "hyprctl dispatch 'hl.dsp.focus({ window = \"address:{address}\" })'"
         }
     },
+    // Carruseles (scripts/carousel.py <grupo>): cada grupo rota por separado
+    // media: brillo y volumen
+    "custom/carousel#media": {
+        "exec": "~/.config/waybar/scripts/carousel.py media",
+        "return-type": "json",
+        "min-length": 6,
+        "align": 0.5,
+        "on-click": "pkill -USR1 -f '^python3 .*waybar/scripts/carousel.py media$'",
+        "on-click-right": "pkill -USR2 -f '^python3 .*waybar/scripts/carousel.py media$'"
+    },
+    // system: CPU, RAM y red
+    "custom/carousel#system": {
+        "exec": "~/.config/waybar/scripts/carousel.py system",
+        "return-type": "json",
+        "min-length": 13,
+        "align": 0.5,
+        "on-click": "pkill -USR1 -f '^python3 .*waybar/scripts/carousel.py system$'",
+        "on-click-right": "pkill -USR2 -f '^python3 .*waybar/scripts/carousel.py system$'"
+    },
+    "custom/notifications": {
+        "tooltip": false,
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "<span foreground='red'><sup></sup></span>",
+            "none": "",
+            "dnd-notification": "<span foreground='red'><sup></sup></span>",
+            "dnd-none": "",
+            "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+            "inhibited-none": "",
+            "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+            "dnd-inhibited-none": ""
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        // Mismo comportamiento que el reloj: abre notificaciones + calendario
+        "on-click": "pkill -USR1 -f '^python3 .*calendar_panel.py$'",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    },
     "clock": {
-        "format": "{:%Y-%m-%d %H:%M}",
+        "format": "{:%d/%m/%Y %H:%M}",
+        // Clic: abre/cierra las notificaciones (swaync) y, debajo, el calendario
+        "on-click": "pkill -USR1 -f '^python3 .*calendar_panel.py$'",
+        // Sin tooltip: se superponía al calendario al hacer clic
+        "tooltip": false,
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
     },
     "cpu": {
-        "format": "CPU: {usage}%",
+        "format": "󰍛 : {usage}%",
         "tooltip": false
     },
     "memory": {
-        "format": "RAM: {}%"
+        "format": "󰘚 : {}%"
     },
     "battery": {
-        "format": "BAT: {capacity}%",
-        "format-charging": "CHG: {capacity}%"
+        "format": "{capacity}% {icon}",
+        "format-icons": ["", "", "", "", ""]
     },
     "network": {
-        "format-wifi": "WiFi: {essid}",
-        "format-ethernet": "ETH: {ipaddr}",
-        "format-disconnected": "Disconnected"
+        "format-wifi": " : {bandwidthDownBits}",
+        "format-ethernet": "󰈀 : {bandwidthDownBits}",
+        "format-disconnected": "󰤯"
     },
     "pulseaudio": {
-        "format": "VOL: {volume}%",
-        "format-muted": "MUTED"
+        "max-volumen": 100,
+        "format": "{icon} {volume}%",
+        "format-muted": "󰖁",
+        "format-bluetooth": " {volume}%",
+        "format-icons": {
+            "default": ["󰕿", "󰖀", "󰕾"],
+            "headphone": "",
+
+          }
     }
 }
