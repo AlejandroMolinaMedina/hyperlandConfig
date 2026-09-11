@@ -7,8 +7,9 @@
 require("conf.general")
 require("conf.input")
 require("conf.bindings")
--- require("conf.rules")
+require("conf.rules")
 require("conf.theme")
+require("conf.animations")
 require("conf.gestures")
 
 -- ============================================
@@ -24,6 +25,9 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("waybar")
 	hl.exec_cmd("hyprpaper")
 	hl.exec_cmd("~/.config/hypr/scripts/wallpaper_daemon.sh")
+	hl.exec_cmd("hyprctl keyword source ~/.config/hypr/conf/mouse.conf")
+	hl.exec_cmd("swaync")
+	hl.exec_cmd("~/.config/waybar/scripts/calendar_panel.py")
 end)
 
 -- ============================================
@@ -35,6 +39,8 @@ hl.config({
 		disable_hyprland_logo = true,
 		disable_splash_rendering = true,
 		force_default_wallpaper = 0,
+		-- Al enfocar otra ventana (ALT + TAB), hereda el maximizado/pantalla completa
+		on_focus_under_fullscreen = 1,
 	},
 })
 
