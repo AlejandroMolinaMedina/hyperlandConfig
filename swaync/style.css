@@ -1,0 +1,193 @@
+@define-color cc-bg rgba(30, 30, 46, 0.85);
+@define-color noti-bg rgba(24, 24, 37, 0.9);
+@define-color noti-bg-hover rgba(49, 50, 68, 0.9);
+@define-color text-color #cdd6f4;
+@define-color text-muted #6c7086;
+@define-color accent-color #ffffff;
+@define-color border-color rgba(255, 255, 255, 0.2);
+
+* {
+  font-family: "JetBrainsMono Nerd Font", "Sans", sans-serif;
+  font-weight: bold;
+}
+
+/* Ventanas base */
+notificationwindow, blankwindow {
+  background: transparent;
+}
+
+.floating-notifications {
+  background: transparent;
+}
+
+/* Centro de Control principal */
+.control-center {
+  background: @cc-bg;
+  color: @text-color;
+  border-radius: 10px;
+  border: 2px solid @border-color;
+  padding: 14px;
+  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.93);
+}
+
+.control-center .control-center-list-placeholder {
+  opacity: 0.5;
+  color: @text-muted;
+}
+
+.control-center .control-center-list {
+  background: transparent;
+}
+
+/* Barra de desplazamiento (Scrollbar) */
+.control-center scrollbar {
+  background: transparent;
+}
+
+.control-center scrollbar slider {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  min-width: 4px;
+}
+
+.control-center scrollbar slider:hover {
+  background: @accent-color;
+}
+
+/* Notificaciones individuales */
+.notification-row {
+  background: none;
+  outline: none;
+}
+
+.notification-row .notification-background {
+  padding: 4px 0px;
+}
+
+.notification-row .notification-background .notification {
+  background: @noti-bg;
+  border: 2px solid @border-color;
+  border-radius: 10px;
+  padding: 6px;
+  transition: background 0.2s ease;
+}
+
+.notification-row .notification-background .notification:hover {
+  background: @noti-bg-hover;
+}
+
+.notification-row .notification-background .notification .notification-default-action {
+  padding: 6px;
+  background: transparent;
+  border: none;
+  color: @text-color;
+}
+
+.notification-row .notification-background .notification .notification-default-action .notification-content .text-box .summary {
+  font-size: 14px;
+  font-weight: bold;
+  color: @text-color;
+}
+
+.notification-row .notification-background .notification .notification-default-action .notification-content .text-box .time {
+  font-size: 12px;
+  color: @text-muted;
+}
+
+.notification-row .notification-background .notification .notification-default-action .notification-content .text-box .body {
+  font-size: 13px;
+  color: @text-color;
+}
+
+/* Botón de cerrar notificaciones */
+.close-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: @text-color;
+  border-radius: 100%;
+  border: none;
+  min-width: 20px;
+  min-height: 20px;
+  margin: 6px;
+}
+
+.close-button:hover {
+  background: #f38ba8;
+  color: #11111b;
+}
+
+/* Widget: Título */
+.widget-title {
+  color: @accent-color;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.widget-title > button {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 4px 10px;
+}
+
+.widget-title > button:hover {
+  background: #ffffff;
+  color: #11111b;
+}
+
+/* Widget: DND (No Molestar) */
+.widget-dnd {
+  background: rgba(49, 50, 68, 0.4);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.widget-dnd label {
+  color: @text-color;
+  font-size: 1rem;
+}
+
+.widget-dnd switch {
+  background: rgba(108, 112, 134, 0.4);
+  border-radius: 10px;
+}
+
+.widget-dnd switch:checked {
+  background: @accent-color;
+}
+
+.widget-dnd switch slider {
+  background: @text-color;
+  border-radius: 10px;
+}
+
+/* Widget: MPRIS (Reproductor de Música) */
+.widget-mpris {
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.widget-mpris .widget-mpris-player {
+  background: rgba(17, 17, 27, 0.6);
+  border-radius: 10px;
+  border: 1px solid @border-color;
+}
+
+.widget-mpris .widget-mpris-player .mpris-overlay {
+  padding: 12px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+}
+
+.widget-mpris .widget-mpris-player .mpris-overlay .widget-mpris-title {
+  font-weight: bold;
+  font-size: 1rem;
+  color: @text-color;
+}
+
+.widget-mpris .widget-mpris-player .mpris-overlay .widget-mpris-subtitle {
+  font-size: 0.85rem;
+  color: @text-muted;
+}
