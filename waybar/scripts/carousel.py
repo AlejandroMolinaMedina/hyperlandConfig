@@ -20,12 +20,13 @@ ROTATE_EVERY = 4  # segundos que se muestra cada elemento
 # Elementos de cada grupo, en el orden en que rotan
 GROUPS = {
     "media": ["backlight", "volume"],
-    "system": ["cpu", "memory", "network"],
+    "system": ["cpu", "memory", "disk", "network"],
 }
 
 # Mismos iconos que tenían los módulos de Waybar
 ICON_CPU = "\U000F035B"
 ICON_MEM = "\U000F061A"
+ICON_DISK = "\U000F02CA"
 ICON_WIFI = "\uF1EB"
 ICON_ETH = "\U000F0200"
 ICON_NET_OFF = "\U000F092F"
@@ -75,6 +76,47 @@ def memory_text():
             info[key] = int(value.split()[0])
     used = round(100 * (1 - info["MemAvailable"] / info["MemTotal"]))
     return f"{ICON_MEM} : {used}%"
+
+
+# Particiones que se vigilan: la primera es la que se muestra en la barra
+# (aquí están los archivos del usuario), el resto solo salen en el tooltip
+DISKS = [("/home", "Datos"), ("/", "Sistema")]
+
+
+def format_bytes(n):
+    for unit in ("B", "kB", "MB", "GB", "TB"):
+        if n < 1000 or unit == "TB":
+            return f"{n:.0f}{unit}" if unit in ("B", "kB") else f"{n:.1f}{unit}"
+        n /= 1000
+
+
+def disk_usage(path):
+    """(porcentaje usado, bytes libres). Como df: sin contar lo reservado a root."""
+    info = os.statvfs(path)
+    usado = (info.f_blocks - info.f_bfree) * info.f_frsize
+    libre = info.f_bavail * info.f_frsize
+    if usado + libre == 0:
+        return None
+    return round(100 * usado / (usado + libre)), libre
+
+
+def disk_text():
+    lineas = []
+    for ruta, etiqueta in DISKS:
+        try:
+            datos = disk_usage(ruta)
+        except OSError:
+            continue
+        if datos is None:
+            continue
+        porcentaje, libre = datos
+        lineas.append(f"{ICON_DISK} {etiqueta} ({ruta}) : {porcentaje}%  ·  {format_bytes(libre)} libres")
+
+    if not lineas:
+        return None
+    principal = disk_usage(DISKS[0][0])
+    # En la barra solo el porcentaje; el detalle de todas las particiones va en el tooltip
+    return f"{ICON_DISK} : {principal[0]}%", "\n".join(lineas)
 
 
 def format_bits(bps):
@@ -160,6 +202,7 @@ def main():
     sources = {
         "cpu": cpu.text,
         "memory": memory_text,
+        "disk": disk_text,
         "network": network.text,
         "volume": volume_text,
         "backlight": backlight_text,
@@ -169,12 +212,16 @@ def main():
 
     index, shown_for, flip = 0, 0, False
     while True:
-        values = {}
+        # Cada fuente devuelve el texto de la barra, o (texto, detalle para el tooltip)
+        values, tooltips = {}, {}
         for name, source in items:
             try:
-                values[name] = source()
+                valor = source()
             except (OSError, ValueError, KeyError):
-                values[name] = None
+                valor = None
+            if isinstance(valor, tuple):
+                valor, tooltips[name] = valor
+            values[name] = valor
 
         # Si el elemento actual no está disponible, pasar al siguiente que sí lo esté
         for _ in range(len(items)):
@@ -185,7 +232,7 @@ def main():
         name = items[index][0]
         output = {
             "text": values[name] or "",
-            "tooltip": "\n".join(v for v in values.values() if v),
+            "tooltip": "\n".join(tooltips.get(n, v) for n, v in values.items() if v),
             # Alternar a/b reinicia la animación CSS en cada cambio de elemento
             "class": [name, "a" if flip else "b"],
         }
