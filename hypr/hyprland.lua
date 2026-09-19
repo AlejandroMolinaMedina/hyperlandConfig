@@ -27,7 +27,10 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("~/.config/hypr/scripts/wallpaper_daemon.sh")
 	hl.exec_cmd("hyprctl keyword source ~/.config/hypr/conf/mouse.conf")
 	hl.exec_cmd("swaync")
-	hl.exec_cmd("~/.config/waybar/scripts/calendar_panel.py")
+	-- Bloqueo por inactividad y apagado de pantalla (hypr/hypridle.conf)
+	hl.exec_cmd("hypridle")
+	-- Los tres paneles (calendario, brillo/volumen y reproducción) en un proceso
+	hl.exec_cmd("~/.config/waybar/scripts/panels.py")
 end)
 
 -- ============================================
@@ -41,6 +44,9 @@ hl.config({
 		force_default_wallpaper = 0,
 		-- Al enfocar otra ventana (ALT + TAB), hereda el maximizado/pantalla completa
 		on_focus_under_fullscreen = 1,
+		-- Con la pantalla apagada, cualquier movimiento o tecla la vuelve a encender
+		mouse_move_enables_dpms = true,
+		key_press_enables_dpms = true,
 	},
 })
 
