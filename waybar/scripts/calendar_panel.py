@@ -12,6 +12,7 @@
 #   swaync-client -t -sw ; pkill -USR1 -f '^python3 .*calendar_panel.py$'
 
 import datetime
+import locale
 import signal
 import sys
 import threading
@@ -210,7 +211,7 @@ class Calendarios:
             def recoger(icomp, istart, iend, *args, _n=nombre, _c=color):
                 encontrados.append(Evento(
                     _a_datetime(istart), istart.is_date(),
-                    icomp.get_summary() or "(sin título)", _n, _c,
+                    icomp.get_summary() or "(no title)", _n, _c,
                 ))
                 return True
 
@@ -229,7 +230,7 @@ class Calendarios:
 
 class Panel(Gtk.Window):
     def __init__(self):
-        super().__init__(title="Calendario")
+        super().__init__(title="Calendar")
         self.get_style_context().add_class("calendar-panel")
         self.set_default_size(ANCHO, -1)
 
@@ -272,7 +273,7 @@ class Panel(Gtk.Window):
         self.calendario.connect("month-changed", self._cambio_de_mes)
         tarjeta.pack_start(self.calendario, False, False, 0)
 
-        titulo = Gtk.Label(label="Próximos eventos", xalign=0)
+        titulo = Gtk.Label(label="Upcoming events", xalign=0)
         titulo.get_style_context().add_class("titulo")
         tarjeta.pack_start(titulo, False, False, 0)
 
@@ -374,7 +375,7 @@ class Panel(Gtk.Window):
             self.lista.remove(hijo)
 
         if not eventos:
-            vacio = Gtk.Label(label="No hay eventos próximos", xalign=0)
+            vacio = Gtk.Label(label="No upcoming events", xalign=0)
             vacio.get_style_context().add_class("vacio")
             self.lista.pack_start(vacio, False, False, 0)
             self.lista.show_all()
@@ -386,11 +387,12 @@ class Panel(Gtk.Window):
             if ev.dia != dia_actual:
                 dia_actual = ev.dia
                 if ev.dia == hoy:
-                    texto = "Hoy"
+                    texto = "Today"
                 elif ev.dia == hoy + datetime.timedelta(days=1):
-                    texto = "Mañana"
+                    texto = "Tomorrow"
                 else:
-                    texto = ev.inicio.strftime("%a %d/%m")
+                    # El nombre del día sale en el idioma del sistema
+                    texto = ev.inicio.strftime("%a %d/%m").capitalize()
                 cabecera = Gtk.Label(label=texto, xalign=0)
                 cabecera.get_style_context().add_class("dia")
                 self.lista.pack_start(cabecera, False, False, 0)
@@ -398,7 +400,7 @@ class Panel(Gtk.Window):
             fila = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
             fila.get_style_context().add_class("evento")
 
-            hora = Gtk.Label(label="todo el día" if ev.todo_el_dia else ev.inicio.strftime("%H:%M"), xalign=0)
+            hora = Gtk.Label(label="All day" if ev.todo_el_dia else ev.inicio.strftime("%H:%M"), xalign=0)
             hora.get_style_context().add_class("evento-hora")
             hora.set_size_request(80, -1)
             fila.pack_start(hora, False, False, 0)
@@ -479,6 +481,12 @@ def main():
     global REGISTRO, SIN_SWAYNC
     REGISTRO = "--debug" in sys.argv
     SIN_SWAYNC = "--sin-swaync" in sys.argv
+    # Nombres de día y mes en el idioma del sistema (Python usa "C" si no)
+    try:
+        locale.setlocale(locale.LC_ALL, "")
+    except locale.Error:
+        pass
+
     Gtk.init([])
     proveedor = Gtk.CssProvider()
     proveedor.load_from_data(CSS.encode("utf-8"))
