@@ -55,15 +55,16 @@ hl.bind("ALT + L", hl.dsp.exec_cmd("/home/al3xmm14/.config/rofi/applets/bin/quic
 -- Multimedia
 -- ============================================
 
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ +5%"))
+-- repeating: mantener pulsada la tecla repite la acción (como binde)
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ +5%"), { repeating = true })
 
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ -5%"))
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ -5%"), { repeating = true })
 
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("pactl set-sink-mute @DEFAULT_SINK@ toggle"))
 
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set +1%"))
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set +1%"), { repeating = true })
 
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 1%-"))
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 1%-"), { repeating = true })
 
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("/home/al3xmm14/Documents/projects/qtileArchLinux/.scripts/mic_manager.sh"))
 
