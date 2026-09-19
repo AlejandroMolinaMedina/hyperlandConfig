@@ -6,7 +6,7 @@
 
     "modules-left": ["hyprland/workspaces", "hyprland/workspaces#apps"],
     "modules-center": [],
-    "modules-right": ["tray", "custom/carousel#media", "custom/carousel#system", "clock", "custom/notifications", "battery"],
+    "modules-right": ["tray", "mpris", "custom/carousel#media", "custom/carousel#system", "clock", "custom/notifications", "battery"],
 
     "backlight": {
         "device": "intel_backlight",
@@ -42,8 +42,10 @@
         "return-type": "json",
         "min-length": 6,
         "align": 0.5,
-        "on-click": "pkill -USR1 -f '^python3 .*waybar/scripts/carousel.py media$'",
-        "on-click-right": "pkill -USR2 -f '^python3 .*waybar/scripts/carousel.py media$'"
+        // Clic: panel de brillo, volumen y salida de audio
+        "on-click": "pkill -USR2 -f '^python3 .*panels.py$'",
+        // Clic derecho: siguiente elemento del carrusel
+        "on-click-right": "pkill -USR1 -f '^python3 .*waybar/scripts/carousel.py media$'"
     },
     // system: CPU, RAM y red
     "custom/carousel#system": {
@@ -53,6 +55,24 @@
         "align": 0.5,
         "on-click": "pkill -USR1 -f '^python3 .*waybar/scripts/carousel.py system$'",
         "on-click-right": "pkill -USR2 -f '^python3 .*waybar/scripts/carousel.py system$'"
+    },
+    // Reproducción: módulo propio de Waybar, sin script aparte.
+    // Solo aparece cuando hay un reproductor con algo cargado.
+    "mpris": {
+        "format": "{status_icon}",
+        "status-icons": {
+            "playing": "",
+            "paused": "",
+            "stopped": ""
+        },
+        "tooltip-format": "{title} — {artist}",
+        // Clic: panel con la canción y los controles (scripts/panels.py)
+        // pkill no admite -WINCH abreviado, hay que nombrarlo entero
+        "on-click": "pkill --signal WINCH -f '^python3 .*panels.py$'",
+        // Clic derecho: pausar o seguir sin abrir nada
+        "on-click-right": "playerctl play-pause",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous"
     },
     "custom/notifications": {
         "tooltip": false,
@@ -71,14 +91,14 @@
         "exec-if": "which swaync-client",
         "exec": "swaync-client -swb",
         // Mismo comportamiento que el reloj: abre notificaciones + calendario
-        "on-click": "pkill -USR1 -f '^python3 .*calendar_panel.py$'",
+        "on-click": "pkill -USR1 -f '^python3 .*panels.py$'",
         "on-click-right": "swaync-client -d -sw",
         "escape": true
     },
     "clock": {
         "format": "{:%d/%m/%Y %H:%M}",
         // Clic: abre/cierra las notificaciones (swaync) y, debajo, el calendario
-        "on-click": "pkill -USR1 -f '^python3 .*calendar_panel.py$'",
+        "on-click": "pkill -USR1 -f '^python3 .*panels.py$'",
         // Sin tooltip: se superponía al calendario al hacer clic
         "tooltip": false,
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"

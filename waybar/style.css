@@ -98,6 +98,23 @@ window#waybar {
     to   { opacity: 1; padding-left: 10px; padding-right: 10px; }
 }
 
+/* Icono de reproducción (módulo mpris): solo visible si hay reproductor */
+#mpris {
+    padding: 0 10px;
+    margin: 4px 2px;
+    border-radius: 5px;
+    color: @accent-color;
+}
+
+#mpris.paused,
+#mpris.stopped {
+    color: #6c7086;
+}
+
+#mpris:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 #clock, #cpu, #memory, #battery, #network, #pulseaudio, #tray, #custom-notifications {
     padding: 0 10px;
     margin: 4px 2px;
