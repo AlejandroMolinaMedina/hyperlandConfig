@@ -343,9 +343,9 @@ class Panel(Gtk.Window):
             boton.set_sensitive(True)
         self.titulo.get_style_context().remove_class("vacio")
 
-        self.titulo.set_label(reproductor.get_title() or "(no title)")
-        self.artista.set_label(reproductor.get_artist() or "")
-        self.album.set_label(reproductor.get_album() or "")
+        self.titulo.set_label(self._leer(reproductor.get_title) or "(no title)")
+        self.artista.set_label(self._leer(reproductor.get_artist) or "")
+        self.album.set_label(self._leer(reproductor.get_album) or "")
         self.reproductor.set_label(reproductor.props.player_name)
 
         sonando = reproductor.props.playback_status == Playerctl.PlaybackStatus.PLAYING
@@ -356,23 +356,32 @@ class Panel(Gtk.Window):
         return False
 
     @staticmethod
-    def _metadato(reproductor, clave):
+    def _leer(funcion, *args):
+        """Lee del reproductor sin arriesgar el proceso.
+
+        Nunca se usa props.metadata ni props.position: si la llamada D-Bus
+        falla (un reproductor que aún está arrancando, un sistema lento al
+        iniciar sesión), libplayerctl llama a g_error() y aborta el proceso
+        entero, y con él los tres paneles. Los métodos get_* y print_* dan en
+        cambio un GLib.Error, que sí se puede capturar."""
         try:
-            valor = reproductor.props.metadata
-            return valor[clave] if valor and clave in valor.keys() else None
-        except (GLib.Error, AttributeError, TypeError):
+            return funcion(*args)
+        except GLib.Error:
             return None
+
+    def _metadato(self, reproductor, clave):
+        return self._leer(reproductor.print_metadata_prop, clave)
 
     def _pintar_progreso(self, reproductor=None):
         reproductor = reproductor or self._activo()
         if reproductor is None:
             return GLib.SOURCE_REMOVE
 
-        duracion = self._metadato(reproductor, "mpris:length") or 0
         try:
-            posicion = reproductor.props.position
-        except GLib.Error:
-            posicion = 0
+            duracion = int(self._metadato(reproductor, "mpris:length") or 0)
+        except ValueError:
+            duracion = 0
+        posicion = self._leer(reproductor.get_position) or 0
 
         if duracion > 0:
             self.progreso.set_fraction(min(1.0, posicion / duracion))
