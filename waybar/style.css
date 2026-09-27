@@ -12,13 +12,18 @@
     min-height: 0;
 }
 
+/* Barra casi transparente: un velo blanco muy tenue que se desvanece hacia
+   abajo, en vez de un fondo oscuro. Sin negro, para no ensuciar el fondo. */
 window#waybar {
-    background-color: @cc-bg;
+    background: linear-gradient(to bottom,
+                rgba(255, 255, 255, 0.14),
+                rgba(255, 255, 255, 0.04));
     color: @text-color;
     margin: 10px 7px 5px 7px;
-    border: 2px solid @border-color;
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 10px;
-    opacity: 0.95;
+    /* Sin opacity: atenuaría también el texto y los iconos */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
 #workspaces button {
