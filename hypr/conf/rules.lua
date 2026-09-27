@@ -1,6 +1,28 @@
 -- ~/.config/hypr/conf/rules.lua
 
 -- ============================================
+-- Desenfoque bajo los paneles que se despliegan
+-- ============================================
+
+-- Las capas (layer surfaces) no se desenfocan solas, aunque el blur esté
+-- activado: hay que pedirlo por su namespace. ignore_alpha evita difuminar
+-- las zonas completamente transparentes que rodean a la tarjeta.
+for _, capa in ipairs({
+	"calendar-panel",
+	"media-panel",
+	"player-panel",
+	"swaync-control-center",
+	"swaync-notification-window",
+}) do
+	hl.layer_rule({
+		name = "blur-" .. capa,
+		match = { namespace = "^" .. capa .. "$" },
+		blur = true,
+		ignore_alpha = 0.2,
+	})
+end
+
+-- ============================================
 -- Calendario de la barra (gsimplecal, clic en la fecha de Waybar)
 -- ============================================
 
