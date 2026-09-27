@@ -57,16 +57,21 @@ CSS = """
 window.media-panel { background: transparent; }
 window.fondo-clic { background: transparent; }
 
+/* Mismo acabado que la barra: velo blanco en degradado, nada de negro.
+   La sombra del texto lo mantiene legible sobre cualquier fondo. */
 .tarjeta {
-    background: rgba(30, 30, 46, 0.85);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(to bottom,
+                rgba(255, 255, 255, 0.34),
+                rgba(255, 255, 255, 0.20));
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 10px;
     padding: 14px;
     color: #cdd6f4;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .titulo {
-    color: #6c7086;
+    color: rgba(255, 255, 255, 0.72);
     font-size: 0.85rem;
     margin-bottom: 2px;
 }
@@ -74,11 +79,11 @@ window.fondo-clic { background: transparent; }
 .icono { font-size: 1.15rem; color: #cdd6f4; }
 .valor { color: #cdd6f4; font-weight: bold; }
 
-.mudo .icono, .mudo .valor { color: #6c7086; }
+.mudo .icono, .mudo .valor { color: rgba(255, 255, 255, 0.72); }
 
 /* background-image: none es imprescindible; el tema lo pinta sobre el color */
 scale trough {
-    background-color: rgba(17, 17, 27, 0.8);
+    background-color: rgba(255, 255, 255, 0.15);
     background-image: none;
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 10px;
@@ -103,7 +108,7 @@ scale slider {
     margin: -6px;
 }
 
-.mudo scale highlight { background-color: #6c7086; }
+.mudo scale highlight { background-color: rgba(255, 255, 255, 0.72); }
 
 .separador {
     background: rgba(255, 255, 255, 0.12);
@@ -128,8 +133,8 @@ scale slider {
 }
 
 .salida-nombre { color: #cdd6f4; }
-.salida-tipo { color: #6c7086; font-size: 0.85rem; }
-.vacio { color: #6c7086; }
+.salida-tipo { color: rgba(255, 255, 255, 0.72); font-size: 0.85rem; }
+.vacio { color: rgba(255, 255, 255, 0.72); }
 """
 
 

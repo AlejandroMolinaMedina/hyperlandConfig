@@ -56,12 +56,17 @@ def log(mensaje):
 CSS = """
 window.calendar-panel { background: transparent; }
 
+/* Mismo acabado que la barra: velo blanco en degradado, nada de negro.
+   La sombra del texto lo mantiene legible sobre cualquier fondo. */
 .tarjeta {
-    background: rgba(30, 30, 46, 0.85);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(to bottom,
+                rgba(255, 255, 255, 0.34),
+                rgba(255, 255, 255, 0.20));
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 10px;
     padding: 14px;
     color: #cdd6f4;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .titulo {
@@ -72,7 +77,7 @@ window.calendar-panel { background: transparent; }
 }
 
 calendar {
-    background: rgba(17, 17, 27, 0.6);
+    background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     padding: 6px;
@@ -93,15 +98,15 @@ calendar.highlight {          /* días con eventos */
 .evento {
     padding: 6px;
     border-radius: 8px;
-    background: rgba(24, 24, 37, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .evento-hora { color: #cdd6f4; font-weight: bold; }
 .evento-titulo { color: #cdd6f4; }
-.evento-calendario { color: #6c7086; font-size: 0.85rem; }
-.dia { color: #6c7086; font-size: 0.9rem; margin-top: 6px; }
-.vacio { color: #6c7086; }
+.evento-calendario { color: rgba(255, 255, 255, 0.72); font-size: 0.85rem; }
+.dia { color: rgba(255, 255, 255, 0.72); font-size: 0.9rem; margin-top: 6px; }
+.vacio { color: rgba(255, 255, 255, 0.72); }
 """
 
 
