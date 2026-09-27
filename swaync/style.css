@@ -1,8 +1,9 @@
-@define-color cc-bg rgba(30, 30, 46, 0.85);
-@define-color noti-bg rgba(24, 24, 37, 0.9);
-@define-color noti-bg-hover rgba(49, 50, 68, 0.9);
+/* Velos blancos muy tenues en vez de fondos oscuros, como la barra */
+@define-color cc-bg rgba(255, 255, 255, 0.10);
+@define-color noti-bg rgba(255, 255, 255, 0.16);
+@define-color noti-bg-hover rgba(255, 255, 255, 0.28);
 @define-color text-color #cdd6f4;
-@define-color text-muted #6c7086;
+@define-color text-muted rgba(255, 255, 255, 0.72);
 @define-color accent-color #ffffff;
 @define-color border-color rgba(255, 255, 255, 0.2);
 
@@ -22,12 +23,16 @@ notificationwindow, blankwindow {
 
 /* Centro de Control principal */
 .control-center {
-  background: @cc-bg;
+  background: linear-gradient(to bottom,
+              rgba(255, 255, 255, 0.34),
+              rgba(255, 255, 255, 0.20));
   color: @text-color;
   border-radius: 10px;
-  border: 2px solid @border-color;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   padding: 14px;
-  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.93);
+  /* Sombra suave: la anterior era casi opaca y ensuciaba el fondo */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .control-center .control-center-list-placeholder {
@@ -66,7 +71,7 @@ notificationwindow, blankwindow {
 
 .notification-row .notification-background .notification {
   background: @noti-bg;
-  border: 2px solid @border-color;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 10px;
   padding: 6px;
   transition: background 0.2s ease;
@@ -137,7 +142,7 @@ notificationwindow, blankwindow {
 
 /* Widget: DND (No Molestar) */
 .widget-dnd {
-  background: rgba(49, 50, 68, 0.4);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   padding: 8px 12px;
   margin-bottom: 8px;
@@ -170,14 +175,14 @@ notificationwindow, blankwindow {
 }
 
 .widget-mpris .widget-mpris-player {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   border: 1px solid @border-color;
 }
 
 .widget-mpris .widget-mpris-player .mpris-overlay {
   padding: 12px;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(255, 255, 255, 0.06);
   border-radius: 10px;
 }
 
