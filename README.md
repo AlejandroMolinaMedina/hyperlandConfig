@@ -1,54 +1,58 @@
 # Dotfiles Hyprland
 
-Una configuración modular y optimizada para el gestor de ventanas **Hyprland**, diseñada para ofrecer un entorno de escritorio elegante, funcional y altamente personalizable en sistemas Arch Linux.
+Una configuración modular, profesional y altamente optimizada para el compositor **Hyprland** en Arch Linux. Este entorno está diseñado para maximizar la productividad con un flujo de trabajo fluido y estéticamente refinado.
 
 ![Hyprland](https://img.shields.io/badge/WM-Hyprland-blue)
-![Status](https://img.shields.io/badge/Arch-Linux-informational)
+![Arch Linux](https://img.shields.io/badge/OS-Arch_Linux-informational)
+![Lua](https://img.shields.io/badge/Config-Lua-blueviolet)
 
 ## Características Principales
-* **Modularidad:** Configuración dividida en componentes lógicos (bindings, animaciones, reglas, temas) para un mantenimiento sencillo.
-* **Waybar Dinámica:** Incluye scripts en Python para paneles avanzados, carruseles de medios y gestión de notificaciones.
-* **Automatización:** Daemon de fondos de pantalla, gestión de energía y utilidades para compartir pantalla integradas.
-* **Estética:** Configuración de `swaync` para notificaciones con estilo CSS personalizado.
+
+* **Arquitectura Modular:** Configuración desglosada en componentes lógicos (`conf/`) para facilitar el mantenimiento y la personalización.
+* **Integración con Lua:** Uso de scripts en Lua para una gestión dinámica de reglas, gestos y animaciones.
+* **Waybar Avanzada:** Módulos personalizados que incluyen paneles multimedia, carruseles y calendarios interactivos mediante scripts en Python.
+* **Automatización Integral:** Scripts dedicados para la gestión de energía, fondos de pantalla dinámicos y utilidades de captura de pantalla.
+* **Estética Cohesiva:** Integración con `swaync` para notificaciones estilizadas y `hyprlock`/`hypridle` para seguridad y gestión de sesión.
 
 ## Estructura del Proyecto
 
 ```text
 .
-├── hypr/               # Configuración central de Hyprland
-│   ├── conf/           # Módulos de configuración (input, bindings, etc.)
-│   └── scripts/        # Automatización (daemon, energía, capturas)
-├── swaync/             # Estilos y configuración del centro de notificaciones
-└── waybar/             # Barra de estado y sus respectivos scripts
+├── hypr/               # Configuración central (Hyprland, Idle, Lock)
+│   ├── conf/           # Módulos: bindings, input, animaciones, temas
+│   └── scripts/        # Automatización de sistemas (dpms, shares, power)
+├── waybar/             # Barra de estado y widgets interactivos
+├── swaync/             # Estilos y configuración de notificaciones
 ```
 
 ## Guía de Inicio Rápido
 
 ### Requisitos previos
-* Hyprland
+* Hyprland (versión reciente recomendada)
 * Waybar
 * Swaync
-* Python 3 (para los scripts de Waybar y Hyprland)
+* Python 3 y librerías necesarias para los paneles
 
 ### Instalación
-1. Clona este repositorio en tu directorio de configuración local:
+1. Clona el repositorio en tu carpeta de configuración:
    ```bash
    git clone <url-del-repositorio> ~/.config/hypr
    ```
-2. Asegúrate de que los scripts tengan permisos de ejecución:
+2. Asegúrate de otorgar permisos de ejecución a los scripts:
    ```bash
    chmod +x ~/.config/hypr/scripts/*.sh
    ```
-3. Reinicia tu sesión de Hyprland para aplicar los cambios.
+3. Verifica que las dependencias de los scripts de Waybar estén instaladas y reinicia la sesión.
 
-## Scripts Incluidos
-El entorno depende de varios scripts especializados ubicados en `hypr/scripts/` y `waybar/scripts/`:
-* `wallpaper_daemon.sh`: Gestiona la rotación y aplicación de fondos.
-* `power_button.py`: Maneja las acciones del botón de encendido.
-* `carousel.py` / `media_panel.py`: Proporcionan widgets interactivos para la Waybar.
+## Scripts y Herramientas
+El entorno potencia la experiencia mediante utilidades en `hypr/scripts/` y `waybar/scripts/`:
+* `wallpaper_daemon.sh`: Ciclo automático de fondos de pantalla.
+* `power_button.py`: Gestión avanzada de estados de energía.
+* `media_panel.py` / `calendar_panel.py`: Widgets interactivos para la barra de estado.
+* `share_picker.py`: Utilidad para la selección de ventanas en sesiones compartidas.
 
 ## Soporte y Contribución
-Para reportar errores o sugerir nuevas configuraciones, por favor abre un *Issue* en el repositorio. Las contribuciones son bienvenidas mediante *Pull Requests*.
+Para reportar problemas o sugerir mejoras, utiliza el sistema de **Issues** del repositorio. Las contribuciones mediante **Pull Requests** son bienvenidas siempre que mantengan el estándar modular del proyecto.
 
 ## Mantenimiento
-Este proyecto se mantiene como una configuración personal optimizada. Se recomienda realizar una copia de seguridad de tu `hyprland.conf` existente antes de aplicar estos cambios.
+Este proyecto representa una configuración personal activa. Se recomienda encarecidamente realizar una copia de seguridad de tu configuración actual antes de reemplazarla.
