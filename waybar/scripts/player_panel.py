@@ -42,29 +42,34 @@ CSS = """
 window.player-panel { background: transparent; }
 window.fondo-clic { background: transparent; }
 
+/* Mismo acabado que la barra: velo blanco en degradado, nada de negro.
+   La sombra del texto lo mantiene legible sobre cualquier fondo. */
 .tarjeta {
-    background: rgba(30, 30, 46, 0.85);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(to bottom,
+                rgba(255, 255, 255, 0.34),
+                rgba(255, 255, 255, 0.20));
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 10px;
     padding: 14px;
     color: #cdd6f4;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .caratula {
-    background: rgba(17, 17, 27, 0.8);
+    background: rgba(255, 255, 255, 0.10);
     border-radius: 8px;
 }
 
-.sin-caratula { color: #6c7086; font-size: 2rem; }
+.sin-caratula { color: rgba(255, 255, 255, 0.72); font-size: 2rem; }
 
 .cancion { color: #ffffff; font-weight: bold; font-size: 1.05rem; }
 .artista { color: #cdd6f4; }
-.album, .reproductor { color: #6c7086; font-size: 0.85rem; }
-.tiempo { color: #6c7086; font-size: 0.8rem; }
-.vacio { color: #6c7086; }
+.album, .reproductor { color: rgba(255, 255, 255, 0.72); font-size: 0.85rem; }
+.tiempo { color: rgba(255, 255, 255, 0.72); font-size: 0.8rem; }
+.vacio { color: rgba(255, 255, 255, 0.72); }
 
 progressbar trough {
-    background-color: rgba(17, 17, 27, 0.8);
+    background-color: rgba(255, 255, 255, 0.15);
     background-image: none;
     border: none;
     border-radius: 10px;

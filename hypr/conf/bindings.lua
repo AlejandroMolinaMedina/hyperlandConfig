@@ -56,9 +56,11 @@ hl.bind("ALT + L", hl.dsp.exec_cmd("/home/al3xmm14/.config/rofi/applets/bin/quic
 -- ============================================
 
 -- repeating: mantener pulsada la tecla repite la acción (como binde)
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ +5%"), { repeating = true })
+-- wpctl en vez de pactl: su opción -l pone un tope (1.0 = 100 %), así el
+-- volumen no puede pasar del 100 %. pactl no tiene forma de limitarlo.
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"), { repeating = true })
 
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ -5%"), { repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { repeating = true })
 
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("pactl set-sink-mute @DEFAULT_SINK@ toggle"))
 
