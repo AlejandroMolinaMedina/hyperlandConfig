@@ -35,6 +35,7 @@ MARGEN_DERECHA = 250   # deja el panel centrado bajo el carrusel de la barra
 HUECO = 8              # separación con la barra
 
 BRILLO_MINIMO = 1      # nunca apagar del todo la pantalla
+VOLUMEN_MAXIMO = 100   # el sonido nunca pasa de aquí, venga de donde venga
 
 # swaync y el panel del calendario: se cierran al abrir este
 SWAYNC_NOMBRE = "org.erikreider.swaync.cc"
@@ -652,6 +653,15 @@ class Panel(Gtk.Window):
 
     def _refrescar_audio(self, forzar=False):
         porcentaje, self.mudo = self.audio.volumen()
+
+        # Tope duro del 100 %: las teclas ya lo respetan (wpctl -l 1.0), pero
+        # pavucontrol o la propia aplicación pueden pasarse. Como aquí ya
+        # estamos escuchando cada cambio de audio, se devuelve a 100 sin
+        # añadir ningún proceso extra.
+        if porcentaje is not None and porcentaje > VOLUMEN_MAXIMO:
+            self.audio.poner_volumen(VOLUMEN_MAXIMO)
+            porcentaje = VOLUMEN_MAXIMO
+
         self.volumen_ui.poner(porcentaje, forzar)
 
         estilo = self.volumen_ui.fila.get_style_context()
