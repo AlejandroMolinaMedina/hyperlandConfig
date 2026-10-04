@@ -1,54 +1,56 @@
-# Dotfiles Hyprland
+# Hyprland Dotfiles
 
-Una configuración modular y optimizada para el gestor de ventanas **Hyprland**, diseñada para ofrecer un entorno de escritorio elegante, funcional y altamente personalizable en sistemas Arch Linux.
+Una configuración modular, profesional y altamente optimizada para **Hyprland** en Arch Linux. Este entorno está diseñado para maximizar la productividad y la estética, utilizando componentes configurables en Lua y scripts de automatización avanzados.
 
 ![Hyprland](https://img.shields.io/badge/WM-Hyprland-blue)
-![Status](https://img.shields.io/badge/Arch-Linux-informational)
+![Arch](https://img.shields.io/badge/OS-Arch_Linux-informational)
+![Lua](https://img.shields.io/badge/Config-Lua-blueviolet)
 
 ## Características Principales
-* **Modularidad:** Configuración dividida en componentes lógicos (bindings, animaciones, reglas, temas) para un mantenimiento sencillo.
-* **Waybar Dinámica:** Incluye scripts en Python para paneles avanzados, carruseles de medios y gestión de notificaciones.
-* **Automatización:** Daemon de fondos de pantalla, gestión de energía y utilidades para compartir pantalla integradas.
-* **Estética:** Configuración de `swaync` para notificaciones con estilo CSS personalizado.
+* **Arquitectura Modular:** Configuración dividida en componentes (`conf/`) para un mantenimiento limpio y escalable.
+* **Integración Lua:** Implementación de archivos Lua para reglas, gestos e inputs, facilitando la personalización avanzada.
+* **Waybar Dinámica:** Incluye múltiples paneles interactivos (calendario, media, reproductores) mediante scripts en Python.
+* **Gestión de Sesión:** Herramientas integradas para bloqueo de pantalla (`hyprlock`), inactividad (`hypridle`) y selección de pantallas (`share_picker`).
+* **Estética Coherente:** Estilos personalizados para `swaync` y Waybar para una experiencia de escritorio unificada.
 
 ## Estructura del Proyecto
 
 ```text
 .
 ├── hypr/               # Configuración central de Hyprland
-│   ├── conf/           # Módulos de configuración (input, bindings, etc.)
-│   └── scripts/        # Automatización (daemon, energía, capturas)
-├── swaync/             # Estilos y configuración del centro de notificaciones
-└── waybar/             # Barra de estado y sus respectivos scripts
+│   ├── conf/           # Módulos (bindings, animaciones, rules, etc.)
+│   ├── scripts/        # Automatización (power, wallpaper, share)
+│   ├── hyprland.lua    # Punto de entrada principal
+│   └── hyprlock.conf   # Configuración de bloqueo
+├── swaync/             # Notificaciones con estilo CSS
+└── waybar/             # Barra de estado y widgets en Python
 ```
 
 ## Guía de Inicio Rápido
 
 ### Requisitos previos
-* Hyprland
-* Waybar
-* Swaync
-* Python 3 (para los scripts de Waybar y Hyprland)
+* Hyprland, Waybar, Swaync, Hyprlock, Hypridle.
+* Python 3 y librerías necesarias para los scripts de Waybar.
 
 ### Instalación
-1. Clona este repositorio en tu directorio de configuración local:
+1. Clona el repositorio en tu configuración:
    ```bash
    git clone <url-del-repositorio> ~/.config/hypr
    ```
-2. Asegúrate de que los scripts tengan permisos de ejecución:
+2. Asegúrate de otorgar permisos de ejecución a los scripts:
    ```bash
    chmod +x ~/.config/hypr/scripts/*.sh
    ```
-3. Reinicia tu sesión de Hyprland para aplicar los cambios.
+3. Verifica que las rutas en `hyprland.lua` coincidan con tu entorno y reinicia la sesión.
 
 ## Scripts Incluidos
-El entorno depende de varios scripts especializados ubicados en `hypr/scripts/` y `waybar/scripts/`:
-* `wallpaper_daemon.sh`: Gestiona la rotación y aplicación de fondos.
-* `power_button.py`: Maneja las acciones del botón de encendido.
-* `carousel.py` / `media_panel.py`: Proporcionan widgets interactivos para la Waybar.
+* `wallpaper_daemon.sh`: Ciclo automático de fondos de pantalla.
+* `power_button.py`: Gestión del menú de apagado/reinicio.
+* `share_picker.py`: Selección de ventanas/pantallas para compartir.
+* `media_panel.py / calendar_panel.py`: Widgets interactivos para la Waybar.
 
-## Soporte y Contribución
-Para reportar errores o sugerir nuevas configuraciones, por favor abre un *Issue* en el repositorio. Las contribuciones son bienvenidas mediante *Pull Requests*.
+## Soporte
+Si encuentras algún problema o deseas proponer una mejora, abre un *Issue* en el repositorio. Asegúrate de incluir logs si el problema está relacionado con los scripts de Python.
 
-## Mantenimiento
-Este proyecto se mantiene como una configuración personal optimizada. Se recomienda realizar una copia de seguridad de tu `hyprland.conf` existente antes de aplicar estos cambios.
+## Mantenimiento y Contribución
+Este proyecto es una configuración personal mantenida activamente. Las contribuciones mediante *Pull Requests* son bienvenidas siempre que mantengan la estructura modular del proyecto. Se recomienda validar la sintaxis Lua antes de enviar cambios en los archivos `.lua`.
