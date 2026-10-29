@@ -7,6 +7,9 @@ hl.config({
 
 		touchpad = {
 			natural_scroll = true,
+			tap_to_click = true, -- tocar = clic
+			clickfinger_behavior = true, -- clic con 2 dedos = derecho, con 3 = central
+			disable_while_typing = true,
 		},
 	},
 

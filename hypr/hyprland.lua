@@ -31,6 +31,9 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("hypridle")
 	-- Los tres paneles (calendario, brillo/volumen y reproducción) en un proceso
 	hl.exec_cmd("~/.config/waybar/scripts/panels.py")
+	-- Vista general estilo Mission Control (3 dedos ↑), plugin
+	-- hypr-mission-control: si Hyprland se actualizó, antes lo recompila
+	hl.exec_cmd("~/.local/bin/hypr-mission-control")
 end)
 
 -- ============================================
