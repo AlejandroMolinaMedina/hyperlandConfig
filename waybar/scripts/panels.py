@@ -125,6 +125,9 @@ def main():
 
     tema = Tema()   # noqa: F841 (tiene que seguir vivo para recibir los cambios)
 
+    # Pantallas que Hyprland deja sin anunciar tras apagar y encender
+    vigilante = display_panel.Vigilante()   # noqa: F841 (tiene que seguir vivo)
+
     coordinador = Coordinador()
     for nombre, _modulo, senal in MODULOS:
         GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, senal, coordinador.alternar, nombre)

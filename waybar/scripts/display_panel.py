@@ -3,7 +3,7 @@
 #
 # Sección "Displays" del panel de brillo y volumen (media_panel.py), al estilo
 # de Windows (Win+P y "Configuración de pantalla"): elegir el modo (extender,
-# duplicar o usar solo una pantalla) y, al extender, colocar los monitores
+# usar solo una pantalla) y, al extender, colocar los monitores
 # arrastrándolos.
 #
 # Lo que se elige se guarda por combinación de monitores conectados en
@@ -12,6 +12,7 @@
 #
 # Con un solo monitor conectado la sección no se muestra.
 
+import glob
 import json
 import os
 import subprocess
@@ -35,7 +36,6 @@ SOLAPE_MINIMO = 120    # px reales que dos monitores vecinos deben compartir
 PERFILES = os.path.expanduser("~/.config/hypr/monitores.json")
 
 ICONO_EXTENDER = "\U000F037A"   # monitor-multiple
-ICONO_DUPLICAR = "\U000F018F"   # content-copy
 ICONO_PORTATIL = "\U000F0322"   # laptop
 ICONO_MONITOR = "\U000F0379"    # monitor
 
@@ -98,7 +98,6 @@ class Monitor:
         self.desc = datos.get("description") or self.nombre
         self.modelo = datos.get("model") or ""
         self.activo = not datos.get("disabled", False)
-        self.espejo = str(datos.get("mirrorOf", "none")) not in ("none", "")
         self.x = datos.get("x", 0)
         self.y = datos.get("y", 0)
         escala = datos.get("scale") or 1
@@ -118,12 +117,25 @@ class Monitor:
         return self.modelo if self.modelo and not self.modelo.startswith("0x") else self.nombre
 
 
+def tapa_cerrada():
+    for ruta in glob.glob("/proc/acpi/button/lid/*/state"):
+        try:
+            with open(ruta) as f:
+                if "closed" in f.read():
+                    return True
+        except OSError:
+            pass
+    return False
+
+
 def leer_monitores():
     try:
         salida = subprocess.run(
             ["hyprctl", "-j", "monitors", "all"], capture_output=True, text=True, timeout=3
         ).stdout
-        monitores = [Monitor(d) for d in json.loads(salida)]
+        # FALLBACK: pantalla virtual de Hyprland cuando no queda ninguna encendida
+        monitores = [Monitor(d) for d in json.loads(salida)
+                     if d["name"] != "FALLBACK" and not d["name"].startswith("HEADLESS")]
     except (OSError, subprocess.SubprocessError, ValueError):
         return []
     # Mismo criterio que hypr/conf/monitores.lua: dos monitores idénticos sin
@@ -135,6 +147,12 @@ def leer_monitores():
         if cuenta[m.desc] > 1:
             m.id = f"{m.desc} @ {m.nombre}"
     monitores.sort(key=lambda m: (0 if es_interno(m.nombre) else 1, m.nombre))
+    # Tapa cerrada: igual que hypr/conf/monitores.lua, la interna no cuenta
+    # (salvo que sea la única) y se usa el perfil de los externos solos
+    if tapa_cerrada():
+        externos = [m for m in monitores if not es_interno(m.nombre)]
+        if externos:
+            return externos
     return monitores
 
 
@@ -143,9 +161,7 @@ def clave(monitores):
 
 
 def modo_actual(monitores):
-    """Lo que se ve ahora mismo: ("duplicar"|"solo"|"extender", monitor solo)."""
-    if any(m.espejo for m in monitores):
-        return "duplicar", None
+    """Lo que se ve ahora mismo: ("solo"|"extender", monitor solo)."""
     activos = [m for m in monitores if m.activo]
     if len(monitores) > 1 and len(activos) == 1:
         return "solo", activos[0]
@@ -464,12 +480,6 @@ class SeccionPantallas(Gtk.Box):
         return rects
 
     def _pintar_lienzo(self, modo, solo):
-        if modo == "duplicar":
-            original = next((m for m in self.monitores if not m.espejo), self.monitores[0])
-            titulo = " = ".join(m.titulo for m in self.monitores)
-            self.lienzo.poner([(original, 0, 0)], False, {original.id: titulo})
-            self.pista.set_text("Same image on every display")
-            return
         rects = self._posiciones_extendidas()
         if modo == "solo":
             apagados = [m.id for m in self.monitores if m is not solo]
@@ -486,8 +496,6 @@ class SeccionPantallas(Gtk.Box):
         opciones = [
             (ICONO_EXTENDER, "Extend", "One desktop across every display",
              modo == "extender", {"modo": "extender"}),
-            (ICONO_DUPLICAR, "Duplicate", "Same image on every display",
-             modo == "duplicar", {"modo": "duplicar"}),
         ]
         for m in self.monitores:
             icono = ICONO_PORTATIL if es_interno(m.nombre) else ICONO_MONITOR
@@ -525,7 +533,7 @@ class SeccionPantallas(Gtk.Box):
             # Sigue abierto para poder colocar las pantallas
             GLib.timeout_add(900, self.refrescar)
         else:
-            # Duplicar o apagar una pantalla puede quitar justo aquella en la
+            # Apagar una pantalla puede quitar justo aquella en la
             # que está el panel: se cierra, como el Win+P de Windows
             self.al_cerrar()
 
@@ -535,3 +543,91 @@ class SeccionPantallas(Gtk.Box):
             "monitores": {i: {"x": x, "y": y} for i, (x, y) in posiciones.items()},
         })
         GLib.timeout_add(900, self.refrescar)
+
+
+# ============================================
+# Vigilante: pantallas que Hyprland no anuncia
+# ============================================
+
+class Vigilante:
+    """Tras apagar y encender pantallas, Hyprland a veces deja una encendida
+    (hyprctl la muestra) pero sin anunciarla a las aplicaciones: Waybar y el
+    fondo de pantalla no aparecen en ella y grim dice "unknown output".
+
+    Escucha los cambios de monitores de Hyprland y, unos segundos después del
+    último, compara las pantallas que ve GTK (lo mismo que ven las apps) con
+    las que Hyprland tiene encendidas. Si falta alguna, la apaga y la vuelve a
+    encender: así Hyprland la anuncia de nuevo."""
+
+    ESPERA_MS = 3000        # tras el último cambio, para no pisar a monitores.lua
+    REINTENTOS = 2          # por pantalla, para no entrar en bucle
+
+    def __init__(self):
+        self.reloj = None
+        self.intentos = {}
+        firma = os.environ.get("HYPRLAND_INSTANCE_SIGNATURE")
+        runtime = os.environ.get("XDG_RUNTIME_DIR", "/run/user/%d" % os.getuid())
+        if not firma:
+            return
+        ruta = os.path.join(runtime, "hypr", firma, ".socket2.sock")
+        try:
+            cliente = Gio.SocketClient.new()
+            self.conexion = cliente.connect(Gio.UnixSocketAddress.new(ruta), None)
+        except GLib.Error:
+            return
+        self.entrada = Gio.DataInputStream.new(self.conexion.get_input_stream())
+        self._leer()
+
+    def _leer(self):
+        self.entrada.read_line_async(GLib.PRIORITY_DEFAULT, None, self._linea)
+
+    def _linea(self, entrada, resultado):
+        try:
+            linea, _largo = entrada.read_line_finish_utf8(resultado)
+        except GLib.Error:
+            return
+        if linea is None:
+            return   # Hyprland cerró el socket
+        if linea.startswith(("monitoradded", "monitorremoved", "configreloaded")):
+            self._programar()
+        self._leer()
+
+    def _programar(self):
+        if self.reloj is not None:
+            GLib.source_remove(self.reloj)
+        self.reloj = GLib.timeout_add(self.ESPERA_MS, self._comprobar)
+
+    def _comprobar(self):
+        self.reloj = None
+        try:
+            salida = subprocess.run(["hyprctl", "-j", "monitors"], capture_output=True,
+                                    text=True, timeout=3).stdout
+            encendidas = [d for d in json.loads(salida)
+                          if not d.get("disabled") and d["name"] != "FALLBACK"
+                          and str(d.get("mirrorOf", "none")) == "none"]
+        except (OSError, subprocess.SubprocessError, ValueError):
+            return GLib.SOURCE_REMOVE
+
+        pantalla = Gdk.Display.get_default()
+        vistas = set()
+        for i in range(pantalla.get_n_monitors()):
+            g = pantalla.get_monitor(i).get_geometry()
+            vistas.add((g.x, g.y))
+
+        for d in encendidas:
+            nombre = d["name"]
+            if (d["x"], d["y"]) in vistas:
+                self.intentos.pop(nombre, None)
+                continue
+            if self.intentos.get(nombre, 0) >= self.REINTENTOS:
+                continue
+            self.intentos[nombre] = self.intentos.get(nombre, 0) + 1
+            modo = f"{d['width']}x{d['height']}@{d['refreshRate']:.2f}"
+            regla = (f'hl.monitor({{ output = "{nombre}", mode = "{modo}", '
+                     f'position = "{d["x"]}x{d["y"]}", scale = {d["scale"]}, '
+                     f'mirror = "", disabled = false }})')
+            lanzar(["hyprctl", "eval", f'hl.monitor({{ output = "{nombre}", disabled = true }})'])
+            GLib.timeout_add(1500, lambda r=regla: lanzar(["hyprctl", "eval", r]) and False)
+            # Volver a comprobar cuando termine
+            self._programar()
+        return GLib.SOURCE_REMOVE
