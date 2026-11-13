@@ -42,7 +42,7 @@
         "return-type": "json",
         "min-length": 6,
         "align": 0.5,
-        // Clic: panel de brillo, volumen y salida de audio
+        // Clic: panel de brillo, volumen, salida de audio y pantallas
         "on-click": "pkill -USR2 -f '^python3 .*panels.py$'",
         // Clic derecho: siguiente elemento del carrusel
         "on-click-right": "pkill -USR1 -f '^python3 .*waybar/scripts/carousel.py media$'"

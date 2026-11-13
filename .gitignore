@@ -1,3 +1,7 @@
 # Caché de Python de los scripts de Waybar
 __pycache__/
 *.pyc
+
+# Tema activo: lo genera hypr/scripts/tema.sh a partir de temas/
+waybar/tema.css
+swaync/tema.css

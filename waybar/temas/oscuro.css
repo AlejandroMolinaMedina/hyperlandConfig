@@ -1,0 +1,4 @@
+/* Tema oscuro de la barra: cristal oscuro translúcido (Catppuccin crust). */
+@define-color barra-arriba rgba(17, 17, 27, 0.72);
+@define-color barra-abajo rgba(17, 17, 27, 0.58);
+@define-color barra-borde rgba(255, 255, 255, 0.10);

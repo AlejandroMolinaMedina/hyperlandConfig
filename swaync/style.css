@@ -1,7 +1,8 @@
-/* Velos blancos muy tenues en vez de fondos oscuros, como la barra */
+/* Colores del tema activo (claro u oscuro): hypr/scripts/tema.sh.
+   Define cc-arriba, cc-abajo, cc-borde, noti-bg y noti-bg-hover. */
+@import "tema.css";
+
 @define-color cc-bg rgba(255, 255, 255, 0.10);
-@define-color noti-bg rgba(255, 255, 255, 0.16);
-@define-color noti-bg-hover rgba(255, 255, 255, 0.28);
 @define-color text-color #cdd6f4;
 @define-color text-muted rgba(255, 255, 255, 0.72);
 @define-color accent-color #ffffff;
@@ -23,12 +24,10 @@ notificationwindow, blankwindow {
 
 /* Centro de Control principal */
 .control-center {
-  background: linear-gradient(to bottom,
-              rgba(255, 255, 255, 0.34),
-              rgba(255, 255, 255, 0.20));
+  background: linear-gradient(to bottom, @cc-arriba, @cc-abajo);
   color: @text-color;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid @cc-borde;
   padding: 14px;
   /* Sombra suave: la anterior era casi opaca y ensuciaba el fondo */
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
