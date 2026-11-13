@@ -27,24 +27,22 @@ Una configuración modular, profesional y altamente optimizada para el composito
 
 ## Guía de Inicio Rápido
 
-### Instalación (Arch Linux)
-En un Arch recién instalado, con tu usuario (no root):
+### Requisitos previos
+* Hyprland (versión reciente recomendada)
+* Waybar
+* Swaync
+* Python 3 y librerías necesarias para los paneles
 
-```bash
-git clone git@github.com:AlejandroMolinaMedina/hyperlandConfig.git ~/Documents/projects/hyperland
-cd ~/Documents/projects/hyperland
-./install.sh            # ./install.sh --simular para ver antes lo que hará
-```
-
-`install.sh` hace, por pasos (cada uno se puede saltar con `--sin-<paso>`):
-
-1. **Paquetes:** Hyprland, hyprlock/hypridle/hyprpaper, swaync, rofi, PipeWire, GTK3 + gtk-layer-shell para los paneles, Evolution Data Server para el calendario, fuentes Nerd Font… y `waybar-git` del AUR (instala `yay` si falta).
-2. **Enlaces:** `~/.config/hypr`, `waybar` y `swaync` apuntan a este repo; lo que hubiera se guarda como `<carpeta>.respaldo-<fecha>`.
-3. **Servicios de usuario:** botón de encendido (`systemd/power-button.service`) y llavero de GNOME.
-4. **Sistema:** logind ignora el botón de encendido y el usuario entra al grupo `input`.
-5. **Plugin** [hypr-mission-control](https://github.com/AlejandroMolinaMedina/hypr-mission-control) (vista general con 3 dedos).
-
-Se puede volver a ejecutar sin problema: lo que ya está hecho se salta. Al final indica lo que queda a mano (fondos de pantalla, configuración de rofi, cuentas del calendario).
+### Instalación
+1. Clona el repositorio en tu carpeta de configuración:
+   ```bash
+   git clone <url-del-repositorio> ~/.config/hypr
+   ```
+2. Asegúrate de otorgar permisos de ejecución a los scripts:
+   ```bash
+   chmod +x ~/.config/hypr/scripts/*.sh
+   ```
+3. Verifica que las dependencias de los scripts de Waybar estén instaladas y reinicia la sesión.
 
 ## Scripts y Herramientas
 El entorno potencia la experiencia mediante utilidades en `hypr/scripts/` y `waybar/scripts/`:
