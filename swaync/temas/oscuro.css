@@ -1,0 +1,6 @@
+/* Tema oscuro de swaync: cristal oscuro translúcido (Catppuccin base/crust). */
+@define-color cc-arriba rgba(30, 30, 46, 0.86);
+@define-color cc-abajo rgba(17, 17, 27, 0.80);
+@define-color cc-borde rgba(255, 255, 255, 0.10);
+@define-color noti-bg rgba(30, 30, 46, 0.85);
+@define-color noti-bg-hover rgba(49, 50, 68, 0.90);

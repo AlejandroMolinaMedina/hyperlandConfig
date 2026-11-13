@@ -76,6 +76,10 @@ hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("/home/al3xmm14/Documents/projects/q
 
 hl.bind("SUPER + L", hl.dsp.exec_cmd("hyprlock"))
 
+-- Pantallas (como Win+P): abre el panel de brillo y volumen, que incluye el
+-- modo (extender, duplicar, solo una) y la posición de cada monitor
+hl.bind("SUPER + P", hl.dsp.exec_cmd("pkill --signal USR2 -f '^python3 .*panels.py$'"))
+
 -- ============================================
 -- Workspaces
 -- ============================================

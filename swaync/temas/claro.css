@@ -1,0 +1,7 @@
+/* Tema claro de swaync: velos blancos. Lo copia hypr/scripts/tema.sh a
+   swaync/tema.css (no versionado). */
+@define-color cc-arriba rgba(255, 255, 255, 0.34);
+@define-color cc-abajo rgba(255, 255, 255, 0.20);
+@define-color cc-borde rgba(255, 255, 255, 0.22);
+@define-color noti-bg rgba(255, 255, 255, 0.16);
+@define-color noti-bg-hover rgba(255, 255, 255, 0.28);

@@ -5,6 +5,7 @@
 -- ============================================
 
 require("conf.general")
+require("conf.monitores")
 require("conf.input")
 require("conf.bindings")
 require("conf.rules")
@@ -22,11 +23,13 @@ hl.env("DBUS_SESSION_BUS_ADDRESS", "unix:path=/run/user/1000/bus")
 -- ============================================
 
 hl.on("hyprland.start", function()
-	hl.exec_cmd("waybar")
+	-- Antes de abrir la barra y las notificaciones: copiar el tema (claro u
+	-- oscuro) que diga el sistema. Ver hypr/scripts/tema.sh
+	hl.exec_cmd("~/.config/hypr/scripts/tema.sh aplicar; waybar")
 	hl.exec_cmd("hyprpaper")
 	hl.exec_cmd("~/.config/hypr/scripts/wallpaper_daemon.sh")
 	hl.exec_cmd("hyprctl keyword source ~/.config/hypr/conf/mouse.conf")
-	hl.exec_cmd("swaync")
+	hl.exec_cmd("~/.config/hypr/scripts/tema.sh aplicar; swaync")
 	-- Bloqueo por inactividad y apagado de pantalla (hypr/hypridle.conf)
 	hl.exec_cmd("hypridle")
 	-- Los tres paneles (calendario, brillo/volumen y reproducción) en un proceso

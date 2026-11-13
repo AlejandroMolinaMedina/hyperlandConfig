@@ -1,0 +1,17 @@
+{
+  "perfiles": {
+    "Samsung Display Corp. 0x41A0 + Samsung Electric Company S24D332 0x425A514B": {
+      "modo": "extender",
+      "monitores": {
+        "Samsung Display Corp. 0x41A0": {
+          "x": 0,
+          "y": 0
+        },
+        "Samsung Electric Company S24D332 0x425A514B": {
+          "x": 0,
+          "y": -1080
+        }
+      }
+    }
+  }
+}

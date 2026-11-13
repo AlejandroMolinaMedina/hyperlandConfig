@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # ~/.config/waybar/scripts/media_panel.py
 #
-# Panel de brillo, volumen y salida de audio para Waybar/Hyprland.
+# Panel de brillo, volumen, salida de audio y pantallas para Waybar/Hyprland.
+# La sección de pantallas vive en display_panel.py.
 # Se abre bajo el carrusel de brillo/volumen de la barra.
 #
 # Arranca oculto. Señales:
@@ -25,6 +26,8 @@ gi.require_version("Gdk", "3.0")
 gi.require_version("GtkLayerShell", "0.1")
 
 from gi.repository import Gdk, Gio, GLib, Gtk, GtkLayerShell
+
+import display_panel
 
 # ============================================
 # Ajustes
@@ -52,6 +55,9 @@ ICONO_ALTAVOZ = "\U000F057E"
 ICONO_PANTALLA = ""
 ICONO_USB = ""
 ICONO_ACTIVO = ""                                   # palomita
+ICONO_TEMA = "\U000F0594"                            # luna (weather-night)
+
+TEMA_SH = os.path.expanduser("~/.config/hypr/scripts/tema.sh")
 
 
 CSS = """
@@ -136,6 +142,29 @@ scale slider {
 .salida-nombre { color: #cdd6f4; }
 .salida-tipo { color: rgba(255, 255, 255, 0.72); font-size: 0.85rem; }
 .vacio { color: rgba(255, 255, 255, 0.72); }
+
+/* Interruptor del modo oscuro, a juego con los deslizadores */
+switch {
+    background-color: rgba(255, 255, 255, 0.15);
+    background-image: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    box-shadow: none;
+}
+
+switch:checked { background-color: #cdd6f4; }
+
+switch slider {
+    background-color: #ffffff;
+    background-image: none;
+    border: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    min-width: 18px;
+    min-height: 18px;
+}
+
+.tema-nombre { color: #cdd6f4; }
 """
 
 
@@ -608,6 +637,37 @@ class Panel(Gtk.Window):
         self.lista_salidas = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         tarjeta.pack_start(self.lista_salidas, False, False, 0)
 
+        # Pantallas: modo y posición (solo con dos o más monitores)
+        self.pantallas = display_panel.SeccionPantallas(self.ocultar)
+        tarjeta.pack_start(self.pantallas, False, False, 0)
+
+        # Modo oscuro de todo el escritorio (hypr/scripts/tema.sh)
+        separador = Gtk.Box()
+        separador.get_style_context().add_class("separador")
+        tarjeta.pack_start(separador, False, False, 0)
+
+        fila_tema = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        icono_tema = Gtk.Label(label=ICONO_TEMA)
+        icono_tema.get_style_context().add_class("icono")
+        icono_tema.set_size_request(22, -1)
+        fila_tema.pack_start(icono_tema, False, False, 0)
+        nombre_tema = Gtk.Label(label="Dark mode", xalign=0)
+        nombre_tema.get_style_context().add_class("tema-nombre")
+        fila_tema.pack_start(nombre_tema, True, True, 0)
+        self.interruptor = Gtk.Switch(valign=Gtk.Align.CENTER)
+        self.id_interruptor = self.interruptor.connect("notify::active", self._cambiar_tema)
+        fila_tema.pack_start(self.interruptor, False, False, 0)
+        tarjeta.pack_start(fila_tema, False, False, 0)
+
+        # Sigue al sistema: si el modo cambia desde otro sitio, el interruptor también
+        self.ajustes = Gio.Settings.new("org.gnome.desktop.interface")
+        self.ajustes.connect("changed::color-scheme", lambda *_: self._refrescar_tema())
+        self._refrescar_tema()
+
+        # Teclado al abrir (Super+P): Tab/flechas, Intro y Escape
+        GtkLayerShell.set_keyboard_mode(self, GtkLayerShell.KeyboardMode.ON_DEMAND)
+        self.connect("key-press-event", self._tecla)
+
         self.fondo = Fondo(self.ocultar)
 
         self.bus = None
@@ -642,6 +702,20 @@ class Panel(Gtk.Window):
             self.audio.cambiar_salida(salida)
             GLib.idle_add(self._refrescar_audio)
         threading.Thread(target=cambiar, daemon=True).start()
+
+    def _refrescar_tema(self):
+        oscuro = self.ajustes.get_string("color-scheme") == "prefer-dark"
+        with self.interruptor.handler_block(self.id_interruptor):
+            self.interruptor.set_active(oscuro)
+
+    def _cambiar_tema(self, interruptor, _param):
+        lanzar([TEMA_SH, "oscuro" if interruptor.get_active() else "claro"])
+
+    def _tecla(self, _w, evento):
+        if evento.keyval == Gdk.KEY_Escape:
+            self.ocultar()
+            return True
+        return False
 
     # -- refresco -----------------------------------------------
 
@@ -740,6 +814,7 @@ class Panel(Gtk.Window):
             self._refrescar_audio(forzar=True)
             self.fondo.show_all()
             self.show_all()
+            self.pantallas.refrescar()
             if self.brillo_ui is not None:
                 self._refrescar_brillo(forzar=True)
                 self.reloj_brillo = GLib.timeout_add(500, self._refrescar_brillo)

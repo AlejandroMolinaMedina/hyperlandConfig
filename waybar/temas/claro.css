@@ -1,0 +1,5 @@
+/* Tema claro de la barra: velo blanco muy tenue que se desvanece hacia abajo.
+   Lo copia hypr/scripts/tema.sh a waybar/tema.css (no versionado). */
+@define-color barra-arriba rgba(255, 255, 255, 0.14);
+@define-color barra-abajo rgba(255, 255, 255, 0.04);
+@define-color barra-borde rgba(255, 255, 255, 0.22);

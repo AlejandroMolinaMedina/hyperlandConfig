@@ -1,3 +1,6 @@
+/* Colores del tema activo (claro u oscuro): hypr/scripts/tema.sh */
+@import "tema.css";
+
 /* Variables based on swaync/style.css */
 @define-color cc-bg rgba(30, 30, 46, 0.85);
 @define-color text-color #cdd6f4;
@@ -12,15 +15,13 @@
     min-height: 0;
 }
 
-/* Barra casi transparente: un velo blanco muy tenue que se desvanece hacia
-   abajo, en vez de un fondo oscuro. Sin negro, para no ensuciar el fondo. */
+/* Barra casi transparente que se desvanece hacia abajo. Los colores vienen
+   del tema (waybar/temas/claro.css u oscuro.css). */
 window#waybar {
-    background: linear-gradient(to bottom,
-                rgba(255, 255, 255, 0.14),
-                rgba(255, 255, 255, 0.04));
+    background: linear-gradient(to bottom, @barra-arriba, @barra-abajo);
     color: @text-color;
     margin: 10px 7px 5px 7px;
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    border: 1px solid @barra-borde;
     border-radius: 10px;
     /* Sin opacity: atenuaría también el texto y los iconos */
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);

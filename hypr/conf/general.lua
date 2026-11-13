@@ -1,34 +1,6 @@
 -- ~/.config/hypr/conf/general.lua
 
--- Monitores
-hl.monitor({
-	output = "eDP-1",
-	mode = "1920x1200@60",
-	position = "auto",
-	scale = 1,
-})
-
-hl.monitor({
-	output = "DP-1",
-	mode = "1920x1080@74.97",
-	position = "auto-right",
-	scale = 1,
-})
-
-hl.monitor({
-	output = "HDMI-A-1",
-	mode = "1920x1080@60.00",
-	position = "auto-right",
-	scale = 1,
-})
-
--- Monitor por defecto
-hl.monitor({
-	output = "",
-	mode = "preferred",
-	position = "auto",
-	scale = 1,
-})
+-- Monitores: ver conf/monitores.lua (perfiles por combinación de pantallas)
 
 -- General
 hl.config({
