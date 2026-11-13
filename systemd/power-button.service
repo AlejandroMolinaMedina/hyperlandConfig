@@ -1,0 +1,15 @@
+# Botón de encendido: abre el menú de apagado de rofi (hypr/scripts/power_button.py).
+# install.sh lo enlaza en ~/.config/systemd/user/ y lo activa.
+# Requiere estar en el grupo "input" y HandlePowerKey=ignore en logind.
+[Unit]
+Description=Power Button Monitor
+After=graphical-session.target
+
+[Service]
+Environment=WAYLAND_DISPLAY=wayland-1
+ExecStart=/usr/bin/python3 %h/.config/hypr/scripts/power_button.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -1,8 +1,10 @@
-import evdev
+import os
 import subprocess
 import sys
 
-POWERMENU_SCRIPT = "/home/al3xmm14/.config/rofi/applets/bin/powermenu.sh"
+import evdev
+
+POWERMENU_SCRIPT = os.path.expanduser("~/.config/rofi/applets/bin/powermenu.sh")
 
 def find_power_button_device():
     for path in evdev.list_devices():
