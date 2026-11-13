@@ -33,7 +33,10 @@ hl.on("hyprland.start", function()
 	-- Bloqueo por inactividad y apagado de pantalla (hypr/hypridle.conf)
 	hl.exec_cmd("hypridle")
 	-- Los tres paneles (calendario, brillo/volumen y reproducción) en un proceso
-	hl.exec_cmd("~/.config/waybar/scripts/panels.py")
+	-- En bucle: si Hyprland le corta la conexión (pasa a veces al conectar o
+	-- desconectar monitores), vuelve a arrancar. hyprctl deja de responder al
+	-- cerrar la sesión y el bucle termina
+	hl.exec_cmd("while hyprctl version >/dev/null 2>&1; do ~/.config/waybar/scripts/panels.py; sleep 1; done")
 	-- Vista general estilo Mission Control (3 dedos ↑), plugin
 	-- hypr-mission-control: si Hyprland se actualizó, antes lo recompila
 	hl.exec_cmd("~/.local/bin/hypr-mission-control")

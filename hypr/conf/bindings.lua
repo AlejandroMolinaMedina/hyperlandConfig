@@ -49,7 +49,7 @@ hl.bind("ALT + TAB", hl.dsp.window.cycle_next())
 
 hl.bind("ALT + SPACE", hl.dsp.exec_cmd("rofi -show drun -theme ~/.config/rofi/launchers/type-4/style-3.rasi"))
 
-hl.bind("ALT + L", hl.dsp.exec_cmd("/home/al3xmm14/.config/rofi/applets/bin/quicklinks.sh"))
+hl.bind("ALT + L", hl.dsp.exec_cmd("~/.config/rofi/applets/bin/quicklinks.sh"))
 
 -- ============================================
 -- Multimedia
@@ -68,7 +68,7 @@ hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set +1%"), { repea
 
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 1%-"), { repeating = true })
 
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("/home/al3xmm14/Documents/projects/qtileArchLinux/.scripts/mic_manager.sh"))
+hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("~/Documents/projects/qtileArchLinux/.scripts/mic_manager.sh"))
 
 -- ============================================
 -- Bloquear
